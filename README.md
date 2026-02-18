@@ -1,18 +1,18 @@
 # 🌉 Tauri Bridge
 
-[![Crates.io](https://img.shields.io/crates/v/tauri-bridge-macros.svg)](https://crates.io/crates/tauri-bridge-macros)
-[![Documentation](https://docs.rs/tauri-bridge-macros/badge.svg)](https://docs.rs/tauri-bridge-macros)
+[![Crates.io](https://img.shields.io/crates/v/tauri-bridge.svg)](https://crates.io/crates/tauri-bridge)
+[![Documentation](https://docs.rs/tauri-bridge/badge.svg)](https://docs.rs/tauri-bridge)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Generate type-safe Tauri commands and WASM client bindings from a single function definition.
 
 ## 📦 Installation
 
-Add `tauri-bridge-macros` to your `Cargo.toml`:
+Add `tauri-bridge` to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-tauri-bridge-macros = "0.1"
+tauri-bridge = "1.o"
 
 # For backend (Tauri app)
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
@@ -86,14 +86,7 @@ fn main() {
 In your WASM frontend, provide the invoke function and use the generated bindings:
 
 ```rust
-use wasm_bindgen::prelude::*;
-
-// Provide the invoke function that bridges to Tauri
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_namespace = ["window", "__TAURI__", "core"])]
-    async fn invoke(cmd: &str, args: JsValue) -> JsValue;
-}
+use your_lib_crate::greet;
 
 // Use the generated client functions
 async fn example() {
@@ -185,51 +178,6 @@ pub fn get_status(user: User) -> Status {
 }
 ```
 
-### Reference Types
-
-The macro handles reference types automatically by adding appropriate lifetimes:
-
-```rust
-#[tauri_bridge]
-pub fn process_data(data: &[u8]) -> Vec<u8> {
-    data.iter().map(|b| b.wrapping_add(1)).collect()
-}
-
-#[tauri_bridge]
-pub fn join_strings(strings: Vec<&str>) -> String {
-    strings.join(", ")
-}
-```
-
-### Unit Return Type
-
-```rust
-#[tauri_bridge]
-pub fn log_message(level: &str, message: &str) {
-    println!("[{}] {}", level, message);
-}
-```
-
-## ⚙️ Configuration
-
-### Feature Flags
-
-| Feature | Description |
-|---------|-------------|
-| `backend` | Generates `#[tauri::command]` annotated functions |
-| `wasm-client` | Generates WASM client bindings with invoke wrappers |
-
-You can enable both features for a shared crate, and the appropriate code will be compiled based on the target architecture.
-
-### Conditional Compilation
-
-The generated code uses `cfg` attributes:
-
-- Backend code: `#[cfg(all(feature = "backend", not(target_arch = "wasm32")))]`
-- Client code: `#[cfg(all(feature = "wasm-client", target_arch = "wasm32"))]`
-
-This means you can safely enable both features in a shared crate - the backend code will only compile on native targets, and the client code will only compile on WASM targets.
-
 ## 🧪 Testing
 
 Run all tests with:
@@ -238,23 +186,6 @@ Run all tests with:
 # Unit tests only
 cargo test
 
-# With backend feature (includes Tauri integration tests)
-cargo test --features backend
-
 # With all features (includes client integration tests)
 cargo test --all-features
 ```
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

@@ -161,10 +161,10 @@ pub fn validate_user(user: User) -> Result<User, String> {
     if user.username.len() < 3 {
         return Err("Username must be at least 3 characters".to_string());
     }
-    if let Some(ref email) = user.email {
-        if !email.contains('@') {
-            return Err("Invalid email format".to_string());
-        }
+    if let Some(ref email) = user.email
+        && !email.contains('@')
+    {
+        return Err("Invalid email format".to_string());
     }
     Ok(user)
 }

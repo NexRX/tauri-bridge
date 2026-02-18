@@ -29,7 +29,7 @@ mod tests;
 use proc_macro::TokenStream;
 use proc_macro2::Span;
 use quote::quote_spanned;
-use syn::{parse_macro_input, ItemFn};
+use syn::{ItemFn, parse_macro_input};
 
 use backend::generate_backend;
 use client::generate_client;

@@ -10,16 +10,16 @@ pub fn has_reference_type(ty: &Type) -> bool {
         Type::Reference(_) => true,
         Type::Path(type_path) => {
             // Check generic arguments for references
-            if let Some(segment) = type_path.path.segments.last() {
-                if let syn::PathArguments::AngleBracketed(args) = &segment.arguments {
-                    return args.args.iter().any(|arg| {
-                        if let syn::GenericArgument::Type(inner_ty) = arg {
-                            has_reference_type(inner_ty)
-                        } else {
-                            false
-                        }
-                    });
-                }
+            if let Some(segment) = type_path.path.segments.last()
+                && let syn::PathArguments::AngleBracketed(args) = &segment.arguments
+            {
+                return args.args.iter().any(|arg| {
+                    if let syn::GenericArgument::Type(inner_ty) = arg {
+                        has_reference_type(inner_ty)
+                    } else {
+                        false
+                    }
+                });
             }
             false
         }
@@ -51,33 +51,33 @@ pub fn transform_ref_to_lifetime(ty: &Type, span: Span) -> TokenStream2 {
         }
         Type::Path(type_path) => {
             // Handle generic arguments that might contain references
-            if let Some(segment) = type_path.path.segments.last() {
-                if let syn::PathArguments::AngleBracketed(args) = &segment.arguments {
-                    let path_without_last = type_path
-                        .path
-                        .segments
-                        .iter()
-                        .take(type_path.path.segments.len() - 1);
-                    let last_ident = &segment.ident;
-                    let transformed_args: Vec<_> = args
-                        .args
-                        .iter()
-                        .map(|arg| {
-                            if let syn::GenericArgument::Type(inner_ty) = arg {
-                                let transformed = transform_ref_to_lifetime(inner_ty, span);
-                                quote_spanned! {span=> #transformed }
-                            } else {
-                                quote_spanned! {span=> #arg }
-                            }
-                        })
-                        .collect();
+            if let Some(segment) = type_path.path.segments.last()
+                && let syn::PathArguments::AngleBracketed(args) = &segment.arguments
+            {
+                let path_without_last = type_path
+                    .path
+                    .segments
+                    .iter()
+                    .take(type_path.path.segments.len() - 1);
+                let last_ident = &segment.ident;
+                let transformed_args: Vec<_> = args
+                    .args
+                    .iter()
+                    .map(|arg| {
+                        if let syn::GenericArgument::Type(inner_ty) = arg {
+                            let transformed = transform_ref_to_lifetime(inner_ty, span);
+                            quote_spanned! {span=> #transformed }
+                        } else {
+                            quote_spanned! {span=> #arg }
+                        }
+                    })
+                    .collect();
 
-                    let prefix: Vec<_> = path_without_last.collect();
-                    if prefix.is_empty() {
-                        return quote_spanned! {span=> #last_ident<#(#transformed_args),*> };
-                    } else {
-                        return quote_spanned! {span=> #(#prefix::)* #last_ident<#(#transformed_args),*> };
-                    }
+                let prefix: Vec<_> = path_without_last.collect();
+                if prefix.is_empty() {
+                    return quote_spanned! {span=> #last_ident<#(#transformed_args),*> };
+                } else {
+                    return quote_spanned! {span=> #(#prefix::)* #last_ident<#(#transformed_args),*> };
                 }
             }
             quote_spanned! {span=> #type_path }

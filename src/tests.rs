@@ -1,7 +1,7 @@
 //! Unit tests for the tauri-bridge-macros crate.
 
 use proc_macro2::{Span, TokenStream as TokenStream2};
-use syn::{parse_quote, ItemFn, Signature, Type};
+use syn::{ItemFn, Signature, Type, parse_quote};
 
 use crate::backend::generate_backend;
 use crate::client::generate_client;
