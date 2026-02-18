@@ -88,6 +88,6 @@ fn main() {
     println!("In a real app, use #[tauri_bridge] on these functions.");
     println!();
     println!("Generated client functions:");
-    println!("  try_call_fetch_user(id) -> Result<User, String>");
-    println!("  call_fetch_user(id) -> User");
+    println!("  try_fetch_user(id) -> Result<User, String>");
+    println!("  fetch_user(id) -> User (unwraps result)");
 }

@@ -16,8 +16,8 @@
 //! - On backend: A `#[tauri::command]` function
 //! - On WASM client:
 //!   - A `GreetArgs` struct with Serialize/Deserialize
-//!   - `try_call_greet` async function that returns `Result<T, String>`
-//!   - `call_greet` async function that unwraps the result
+//!   - `try_greet` async function that returns `Result<T, String>`
+//!   - `greet` async function with same signature as backend (unwraps result)
 
 mod backend;
 mod client;
@@ -49,8 +49,8 @@ use client::generate_client;
 /// - On backend: A `#[tauri::command]` function
 /// - On WASM client:
 ///   - A `GreetArgs` struct
-///   - `try_call_greet` async function that returns `Result<T, String>`
-///   - `call_greet` async function that unwraps the result
+///   - `try_greet` async function that returns `Result<T, String>`
+///   - `greet` async function with same signature as backend (unwraps result)
 #[proc_macro_attribute]
 pub fn tauri_bridge(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let input = parse_macro_input!(item as ItemFn);

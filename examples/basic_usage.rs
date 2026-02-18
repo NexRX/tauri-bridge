@@ -36,8 +36,8 @@ fn main() {
 
     println!("Generates:");
     println!("  Backend:  greet() with #[tauri::command]");
-    println!("  Client:   try_call_greet() -> Result<String, String>");
-    println!("  Client:   call_greet() -> String\n");
+    println!("  Client:   try_greet() -> Result<String, String>");
+    println!("  Client:   greet() -> String (unwraps result)\n");
 
     let user = User {
         id: 1,

@@ -41,10 +41,10 @@ fn test_basic_string_return() {
 
     // Client should have GreetArgs struct
     assert!(contains_pattern(&client, "struct GreetArgs"));
-    // Client should have try_call_greet
-    assert!(contains_pattern(&client, "async fn try_call_greet"));
-    // Client should have call_greet
-    assert!(contains_pattern(&client, "async fn call_greet"));
+    // Client should have try_greet (returns Result)
+    assert!(contains_pattern(&client, "async fn try_greet"));
+    // Client should have greet (unwraps result, same sig as backend)
+    assert!(contains_pattern(&client, "async fn greet"));
     // Client should use lifetime for &str
     assert!(contains_pattern(&client, "& 'a str"));
 }
@@ -61,9 +61,9 @@ fn test_no_args_function() {
 
     // Should NOT have args struct (no args)
     assert!(!contains_pattern(&client, "struct GetVersionArgs"));
-    // Should have the functions
-    assert!(contains_pattern(&client, "async fn try_call_get_version"));
-    assert!(contains_pattern(&client, "async fn call_get_version"));
+    // Should have both try_ and regular functions
+    assert!(contains_pattern(&client, "async fn try_get_version"));
+    assert!(contains_pattern(&client, "async fn get_version"));
 }
 
 #[test]
@@ -296,14 +296,13 @@ fn test_private_function() {
     let client = generate_client(&input);
 
     // Should NOT have pub
-    assert!(contains_pattern(
-        &client,
-        "async fn try_call_internal_helper"
-    ));
+    assert!(contains_pattern(&client, "async fn try_internal_helper"));
+    assert!(contains_pattern(&client, "async fn internal_helper"));
     assert!(!contains_pattern(
         &client,
-        "pub async fn try_call_internal_helper"
+        "pub async fn try_internal_helper"
     ));
+    assert!(!contains_pattern(&client, "pub async fn internal_helper"));
 }
 
 #[test]

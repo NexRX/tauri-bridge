@@ -13,8 +13,8 @@ use crate::types::{
 ///
 /// This generates:
 /// - An args struct with Serialize/Deserialize derives
-/// - A `try_call_<name>` async function returning `Result<T, String>`
-/// - A `call_<name>` async function that unwraps the result
+/// - A `try_<name>` async function returning `Result<T, String>`
+/// - A `<name>` async function that unwraps the result (same signature as backend)
 pub fn generate_client(input: &ItemFn) -> TokenStream2 {
     let fn_name = &input.sig.ident;
     let fn_name_str = fn_name.to_string();
@@ -28,8 +28,8 @@ pub fn generate_client(input: &ItemFn) -> TokenStream2 {
     );
 
     // Generate client function names
-    let try_call_fn_name = syn::Ident::new(&format!("try_call_{}", fn_name), call_site);
-    let call_fn_name = syn::Ident::new(&format!("call_{}", fn_name), call_site);
+    let try_fn_name = syn::Ident::new(&format!("try_{}", fn_name), call_site);
+    let fn_name_ident = syn::Ident::new(&fn_name_str, call_site);
 
     // Extract function arguments
     let args: Vec<_> = input
@@ -94,7 +94,7 @@ pub fn generate_client(input: &ItemFn) -> TokenStream2 {
         })
         .collect();
 
-    // Generate argument forwarding for call_ -> try_call_
+    // Generate argument forwarding for fn -> try_fn
     let arg_forwards: Vec<_> = args
         .iter()
         .filter_map(|pat_type| {
@@ -134,7 +134,7 @@ pub fn generate_client(input: &ItemFn) -> TokenStream2 {
         quote_spanned! {call_site=> }
     };
 
-    // Generate the invoke call for try_call (returns Result)
+    // Generate the invoke call for try_ (returns Result)
     let try_invoke_call = if has_args {
         quote_spanned! {call_site=>
             let args = serde_wasm_bindgen::to_value(&#args_struct_name { #(#field_inits),* })
@@ -149,31 +149,31 @@ pub fn generate_client(input: &ItemFn) -> TokenStream2 {
         }
     };
 
-    // Generate both try_call_ and call_ functions
+    // Generate both try_ and regular functions
     let client_fns = if needs_lifetime {
         quote_spanned! {call_site=>
             #[cfg(target_arch = "wasm32")]
-            #vis async fn #try_call_fn_name<'a>(#(#fn_params),*) -> Result<#return_type, String> {
+            #vis async fn #try_fn_name<'a>(#(#fn_params),*) -> Result<#return_type, String> {
                 #try_invoke_call
                 #try_deserialize_expr
             }
 
             #[cfg(target_arch = "wasm32")]
-            #vis async fn #call_fn_name<'a>(#(#fn_params),*) -> #return_type {
-                #try_call_fn_name(#(#arg_forwards),*).await.unwrap()
+            #vis async fn #fn_name_ident<'a>(#(#fn_params),*) -> #return_type {
+                #try_fn_name(#(#arg_forwards),*).await.unwrap()
             }
         }
     } else {
         quote_spanned! {call_site=>
             #[cfg(target_arch = "wasm32")]
-            #vis async fn #try_call_fn_name(#(#fn_params),*) -> Result<#return_type, String> {
+            #vis async fn #try_fn_name(#(#fn_params),*) -> Result<#return_type, String> {
                 #try_invoke_call
                 #try_deserialize_expr
             }
 
             #[cfg(target_arch = "wasm32")]
-            #vis async fn #call_fn_name(#(#fn_params),*) -> #return_type {
-                #try_call_fn_name(#(#arg_forwards),*).await.unwrap()
+            #vis async fn #fn_name_ident(#(#fn_params),*) -> #return_type {
+                #try_fn_name(#(#arg_forwards),*).await.unwrap()
             }
         }
     };

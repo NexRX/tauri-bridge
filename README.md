@@ -81,17 +81,17 @@ use your_lib_crate::greet;
 
 // Use the generated client functions
 async fn example() {
-    // Type-safe calls with automatic serialization
-    let greeting: String = call_greet("World").await;
+    // Regular function has same signature as backend (unwraps result)
+    let greeting: String = greet("World").await;
     
-    // Or use the Result-returning variant
-    match try_call_fetch_user(42).await {
+    // Or use the try_ variant for Result handling
+    match try_fetch_user(42).await {
         Ok(user) => println!("Got user: {:?}", user),
         Err(e) => eprintln!("Error: {}", e),
     }
     
     // Enums work seamlessly
-    let result = call_calculate(10, 5, Operation::Add).await;
+    let result = calculate(10, 5, Operation::Add).await;
 }
 ```
 
