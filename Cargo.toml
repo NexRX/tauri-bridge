@@ -1,0 +1,62 @@
+[package]
+name = "tauri-bridge"
+version = "0.1.0"
+edition = "2021"
+authors = ["Nex <nex@nexhub.co.uk>"]
+description = "Generate type-safe Tauri commands and WASM client bindings from a single function definition"
+license = "MIT"
+repository = "https://github.com/NexRX/tauri-bridge"
+documentation = "https://docs.rs/tauri-bridge"
+readme = "README.md"
+keywords = ["tauri", "wasm", "macro", "ipc", "bridge"]
+categories = ["development-tools::procedural-macro-helpers", "wasm", "gui"]
+
+[lib]
+proc-macro = true
+
+[features]
+default = []
+backend = []
+wasm-client = []
+
+[dependencies]
+proc-macro2 = "1"
+quote = "1"
+syn = { version = "2", features = ["full", "parsing", "extra-traits"] }
+convert_case = "0.11"
+
+[dev-dependencies]
+# For testing the macro output
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# For Tauri integration tests
+tauri = { version = "2", features = ["test"] }
+tokio = { version = "1", features = ["rt", "macros"] }
+
+[[example]]
+name = "basic_usage"
+path = "examples/basic_usage.rs"
+
+[[example]]
+name = "complex_types"
+path = "examples/complex_types.rs"
+required-features = ["backend"]
+
+[[example]]
+name = "async_commands"
+path = "examples/async_commands.rs"
+
+[[test]]
+name = "macro_expansion"
+path = "tests/macro_expansion.rs"
+
+[[test]]
+name = "tauri_integration"
+path = "tests/tauri_integration.rs"
+required-features = ["backend"]
+
+[[test]]
+name = "client_integration"
+path = "tests/client_integration.rs"
+required-features = ["backend", "wasm-client"]
