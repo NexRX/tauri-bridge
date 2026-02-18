@@ -1,8 +1,8 @@
 //! Tauri integration tests.
 //!
-//! Run with: cargo test --test tauri_integration --features backend
+//! Run with: cargo test --test tauri_integration
 
-#![cfg(all(feature = "backend", not(target_arch = "wasm32")))]
+#![cfg(not(target_arch = "wasm32"))]
 
 use serde::{Deserialize, Serialize};
 use tauri_bridge::tauri_bridge;

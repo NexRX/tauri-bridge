@@ -1,8 +1,8 @@
 //! Client integration tests for the generated WASM client functions.
 //!
-//! Run with: cargo test --test client_integration --features "backend wasm-client"
+//! Run with: cargo test --test client_integration
 
-#![cfg(all(feature = "backend", feature = "wasm-client"))]
+#![cfg(not(target_arch = "wasm32"))]
 
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;

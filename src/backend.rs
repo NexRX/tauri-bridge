@@ -27,7 +27,7 @@ pub fn generate_backend(input: &ItemFn) -> TokenStream2 {
     let fn_name_new = syn::Ident::new(&fn_name_str, call_site);
 
     quote_spanned! {call_site=>
-        #[cfg(all(feature = "backend", not(target_arch = "wasm32")))]
+        #[cfg(not(target_arch = "wasm32"))]
         mod #mod_name {
             use super::*;
 
@@ -36,7 +36,7 @@ pub fn generate_backend(input: &ItemFn) -> TokenStream2 {
             #vis #asyncness fn #fn_name_new #generics (#inputs) #output #where_clause #block
         }
 
-        #[cfg(all(feature = "backend", not(target_arch = "wasm32")))]
+        #[cfg(not(target_arch = "wasm32"))]
         #vis use #mod_name::#fn_name_new;
     }
 }

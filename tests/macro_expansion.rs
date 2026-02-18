@@ -54,7 +54,7 @@ pub fn concat(a: &str, b: &str) -> String {
     format!("{}{}", a, b)
 }
 
-#[cfg(all(feature = "backend", not(target_arch = "wasm32")))]
+#[cfg(not(target_arch = "wasm32"))]
 mod tests {
     use super::*;
 
@@ -113,7 +113,7 @@ mod tests {
     }
 }
 
-#[cfg(not(all(feature = "backend", not(target_arch = "wasm32"))))]
+#[cfg(target_arch = "wasm32")]
 mod tests {
     #[test]
     fn test_macro_generates_valid_code() {

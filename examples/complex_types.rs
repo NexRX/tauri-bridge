@@ -1,6 +1,6 @@
 //! Complex types example - demonstrates structs, enums, and nested types.
 //!
-//! Run with: cargo run --example complex_types --features backend
+//! Run with: cargo run --example complex_types
 
 use serde::{Deserialize, Serialize};
 use tauri_bridge::tauri_bridge;

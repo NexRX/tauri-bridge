@@ -11,7 +11,7 @@ Add `tauri-bridge` to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-tauri-bridge = "1.o"
+tauri-bridge = "1"
 
 # For backend (Tauri app)
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
@@ -23,14 +23,6 @@ serde = { version = "1", features = ["derive"] }
 serde_wasm_bindgen = "0.6"
 wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"
-```
-
-Enable the appropriate features:
-
-```toml
-[features]
-backend = []       # Enable for Tauri backend
-wasm-client = []   # Enable for WASM frontend
 ```
 
 ## 🚀 Quick Start

@@ -115,7 +115,7 @@ pub fn generate_client(input: &ItemFn) -> TokenStream2 {
     let struct_def = if has_args {
         if needs_lifetime {
             quote_spanned! {call_site=>
-                #[cfg(all(feature = "wasm-client", target_arch = "wasm32"))]
+                #[cfg(target_arch = "wasm32")]
                 #[derive(serde::Serialize, serde::Deserialize)]
                 struct #args_struct_name<'a> {
                     #(#struct_fields),*
@@ -123,7 +123,7 @@ pub fn generate_client(input: &ItemFn) -> TokenStream2 {
             }
         } else {
             quote_spanned! {call_site=>
-                #[cfg(all(feature = "wasm-client", target_arch = "wasm32"))]
+                #[cfg(target_arch = "wasm32")]
                 #[derive(serde::Serialize, serde::Deserialize)]
                 struct #args_struct_name {
                     #(#struct_fields),*
@@ -152,26 +152,26 @@ pub fn generate_client(input: &ItemFn) -> TokenStream2 {
     // Generate both try_call_ and call_ functions
     let client_fns = if needs_lifetime {
         quote_spanned! {call_site=>
-            #[cfg(all(feature = "wasm-client", target_arch = "wasm32"))]
+            #[cfg(target_arch = "wasm32")]
             #vis async fn #try_call_fn_name<'a>(#(#fn_params),*) -> Result<#return_type, String> {
                 #try_invoke_call
                 #try_deserialize_expr
             }
 
-            #[cfg(all(feature = "wasm-client", target_arch = "wasm32"))]
+            #[cfg(target_arch = "wasm32")]
             #vis async fn #call_fn_name<'a>(#(#fn_params),*) -> #return_type {
                 #try_call_fn_name(#(#arg_forwards),*).await.unwrap()
             }
         }
     } else {
         quote_spanned! {call_site=>
-            #[cfg(all(feature = "wasm-client", target_arch = "wasm32"))]
+            #[cfg(target_arch = "wasm32")]
             #vis async fn #try_call_fn_name(#(#fn_params),*) -> Result<#return_type, String> {
                 #try_invoke_call
                 #try_deserialize_expr
             }
 
-            #[cfg(all(feature = "wasm-client", target_arch = "wasm32"))]
+            #[cfg(target_arch = "wasm32")]
             #vis async fn #call_fn_name(#(#fn_params),*) -> #return_type {
                 #try_call_fn_name(#(#arg_forwards),*).await.unwrap()
             }

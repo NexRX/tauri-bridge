@@ -1,6 +1,6 @@
 [package]
 name = "tauri-bridge"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2024"
 authors = ["Nex <nex@nexhub.co.uk>"]
 description = "Generate type-safe Tauri commands and WASM client bindings from a single function definition"
@@ -13,11 +13,6 @@ categories = ["development-tools::procedural-macro-helpers", "wasm", "gui"]
 
 [lib]
 proc-macro = true
-
-[features]
-default = []
-backend = []
-wasm-client = []
 
 [dependencies]
 proc-macro2 = "1"
@@ -41,7 +36,6 @@ path = "examples/basic_usage.rs"
 [[example]]
 name = "complex_types"
 path = "examples/complex_types.rs"
-required-features = ["backend"]
 
 [[example]]
 name = "async_commands"
@@ -54,9 +48,7 @@ path = "tests/macro_expansion.rs"
 [[test]]
 name = "tauri_integration"
 path = "tests/tauri_integration.rs"
-required-features = ["backend"]
 
 [[test]]
 name = "client_integration"
 path = "tests/client_integration.rs"
-required-features = ["backend", "wasm-client"]
