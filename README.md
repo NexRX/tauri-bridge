@@ -1,7 +1,6 @@
 # 🌉 Tauri Bridge
 
 [![Crates.io](https://img.shields.io/crates/v/tauri-bridge.svg)](https://crates.io/crates/tauri-bridge)
-[![Documentation](https://docs.rs/tauri-bridge/badge.svg)](https://docs.rs/tauri-bridge)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Generate type-safe Tauri commands and WASM client bindings from a single function definition.
